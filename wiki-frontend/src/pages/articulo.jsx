@@ -9,7 +9,7 @@ export const Articulo = () => {
     useEffect(() => {
         const cargarArticulo = async () => {
             try {
-                const URL_API = `http://localhost:3000/api/articulos/${id}`;
+               const URL_API = `https://wiki-oewl.onrender.com/api/articulos/${id}`;
                 const respuesta = await fetch(URL_API);
 
                 if (respuesta.ok) {
