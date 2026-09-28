@@ -10,7 +10,7 @@ export const Articulos = () => {
     useEffect(() => {
         const cargarDatos = async () => {
             try {
-                const respuesta = await fetch('http://localhost:3000/api/articulos');
+               const respuesta = await fetch('https://wiki-oewl.onrender.com/api/articulos');
                 if (respuesta.ok) {
                     const data = await respuesta.json();
                     setArticulos(data);
