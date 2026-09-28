@@ -289,7 +289,7 @@ app.get('/api/admin/logs', async (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.send('Backend de Wiki funcionando correctamente 🚀');
+  res.send('Backend de Wiki funcionando correctamente ');
 });
 
 // Arrancar el servidor
