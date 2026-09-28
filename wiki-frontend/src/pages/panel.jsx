@@ -26,7 +26,7 @@ export const Panel = () => {
 
     const obtenerArticulos = async () => {
         try {
-            const respuesta = await fetch('http://localhost:3000/api/articulos');
+            const respuesta = await fetch('https://so-wiki.onrender.com/api/articulos');
             if (respuesta.ok) {
                 const data = await respuesta.json();
                 setListaArticulos(data);
@@ -67,7 +67,7 @@ export const Panel = () => {
         let urlImagenFinal = articulo.imagen;
 
         try {
-            // 🌟 AQUÍ INTEGRAMOS TU LÓGICA DE SUBIDA EXACTA 🌟
+            //  AQUÍ INTEGRAMOS TU LÓGICA DE SUBIDA EXACTA 
             if (imagenArchivo) {
                 setMensaje({ texto: 'Subiendo portada a Supabase...', tipo: 'info' });
 
@@ -98,9 +98,9 @@ export const Panel = () => {
 
             // ENVIAMOS AL BACKEND DE NODE.JS
             const URL_API = editandoId
-                ? `http://localhost:3000/api/articulos/${editandoId}`
-                : 'http://localhost:3000/api/articulos';
-            const metodo = editandoId ? 'PUT' : 'POST';
+                ? `https://so-wiki.onrender.com/api/articulos/${editandoId}`
+                : 'https://so-wiki.onrender.com/api/articulos';
+                        const metodo = editandoId ? 'PUT' : 'POST';
 
             const respuesta = await fetch(URL_API, {
                 method: metodo,
