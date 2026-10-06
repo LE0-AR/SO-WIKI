@@ -18,7 +18,7 @@ export const Home = () => {
                 <div className="container py-5">
                     
                     <p className="fw-semibold text-light mb-3" style={{ letterSpacing: '1px' }}>
-                        Proyecto de Arquitectura Híbrida: Base de Conocimientos + Simulador de Memoria RAM
+                        Base de Conocimientos · Simulador de Memoria RAM · Parqueo Concurrente
                     </p>
                     
                     <h1 className="display-3 fw-bold mb-5">
@@ -33,6 +33,9 @@ export const Home = () => {
                         <Link to="/simulacion" className="btn btn-success btn-lg px-4 py-2 fw-bold rounded-pill">
                             Abrir Simulador
                         </Link>
+                        <Link to="/parqueo" className="btn btn-outline-light btn-lg px-4 py-2 fw-bold rounded-pill">
+                            Parqueo Concurrente
+                        </Link>
                     </div>
 
                 </div>
@@ -46,7 +49,7 @@ export const Home = () => {
                             Arquitectura del Proyecto
                         </h2>
                         <p className="text-secondary mb-4" style={{ lineHeight: '1.8' }}>
-                            Este sistema fue diseñado como una solución de arquitectura híbrida. Por un lado, funciona como una base de conocimientos estructurada para la gestión de proyectos. Por otro, integra un motor matemático interactivo que simula la gestión de memoria RAM (límite de 1024 MB) y la concurrencia de CPU, procesando colas de ejecución en tiempo real.
+                            Este sistema fue diseñado como una solución de arquitectura híbrida. Por un lado, funciona como una base de conocimientos estructurada para la gestión de proyectos. Por otro, integra un motor matemático interactivo que simula la gestión de memoria RAM (límite de 1024 MB) y la concurrencia de CPU, procesando colas de ejecución en tiempo real. El Proyecto 2 añade un parqueo concurrente con hilos reales en Node.js, sincronización de recursos y detección y recuperación de interbloqueos.
                         </p>
                         
                         <div className="border-top border-success pt-4 mt-2">

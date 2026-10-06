@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "start:parqueo": "node src/parqueo/server.js",
+    "dev:parqueo": "nodemon src/parqueo/server.js",
+    "test": "node --test test/parqueo/*.test.js"
   },
   "keywords": [],
   "author": "",
@@ -15,9 +18,11 @@
     "@supabase/supabase-js": "^2.112.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "socket.io-client": "^4.8.1"
   }
 }

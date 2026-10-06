@@ -1,0 +1,49 @@
+.parqueo-page {
+  --parqueo-ink: #212529;
+  --parqueo-muted: #495057;
+  --parqueo-surface: #fff;
+  --parqueo-border: #dee2e6;
+  --parqueo-occupied: #e9ecef;
+  color: var(--parqueo-ink);
+}
+.parqueo-page .container { padding-inline: 16px; }
+.parqueo-page .pq-secondary { color: var(--parqueo-muted); }
+.parqueo-page .pq-notice { border-left: 4px solid var(--parqueo-ink); padding: 10px; background: var(--parqueo-occupied); }
+.parqueo-page .card, .parqueo-page .row > * { min-width: 0; }
+.parqueo-page .table { font-size: .875rem; }
+.parqueo-page .table th { white-space: nowrap; }
+.parqueo-page .table td { overflow-wrap: anywhere; }
+.parqueo-page button:focus-visible, .parqueo-page summary:focus-visible,
+.parqueo-page [tabindex]:focus-visible { outline: 3px solid var(--parqueo-ink); outline-offset: 3px; }
+.parqueo-zones { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.parqueo-spaces { display: grid; grid-template-columns: repeat(auto-fit, minmax(85px, 1fr)); gap: 12px; }
+.parqueo-space { min-height: 85px; display: flex; flex-direction: column; justify-content: center; text-align: center; border: 2px solid var(--parqueo-border); border-radius: 10px; background: var(--parqueo-surface); }
+.parqueo-space-occupied { background: var(--parqueo-occupied); border-color: var(--parqueo-muted); }
+.parqueo-space strong { font-size: 1.1rem; }
+.parqueo-command { padding: 12px; background: var(--parqueo-occupied); border-radius: 8px; font-size: .78rem; overflow-x: auto; }
+.parqueo-graph-scroll { overflow: auto; max-height: 620px; border: 1px solid var(--parqueo-border); border-radius: 10px; background: var(--parqueo-surface); }
+.parqueo-graph { width: 100%; min-width: 520px; display: block; }
+.parqueo-edge { fill: none; stroke: var(--parqueo-muted); stroke-width: 2; }
+.parqueo-cycle { stroke: var(--parqueo-ink); stroke-width: 4; }
+.parqueo-node { cursor: default; }
+.parqueo-node ellipse, .parqueo-node rect { fill: var(--parqueo-surface); stroke: var(--parqueo-muted); stroke-width: 2; }
+.parqueo-node:hover ellipse, .parqueo-node:focus ellipse,
+.parqueo-node:hover rect, .parqueo-node:focus rect { fill: var(--parqueo-occupied); stroke-width: 3; }
+.parqueo-node text { fill: var(--parqueo-ink); font-size: 14px; font-family: inherit; }
+.parqueo-log { max-height: 320px; overflow: auto; }
+.parqueo-stale { opacity: .7; }
+.parqueo-markdown { overflow-wrap: anywhere; line-height: 1.7; }
+.parqueo-markdown h1 { font-size: 1.6rem; }
+.parqueo-markdown h2 { font-size: 1.3rem; margin-top: 2rem; }
+.parqueo-markdown h3 { font-size: 1.1rem; margin-top: 1.5rem; }
+.parqueo-markdown table { display: block; overflow-x: auto; max-width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+.parqueo-markdown th, .parqueo-markdown td { padding: .5rem .75rem; border: 1px solid var(--parqueo-border); }
+.parqueo-markdown pre { overflow-x: auto; padding: 1rem; background: var(--parqueo-occupied); }
+@media (max-width: 575px) {
+  .parqueo-page .card { padding: 20px !important; }
+  .parqueo-page h1 { font-size: 1.85rem; }
+}
+@media (forced-colors: active) {
+  .parqueo-page { --parqueo-ink: CanvasText; --parqueo-muted: CanvasText; --parqueo-surface: Canvas; --parqueo-border: CanvasText; }
+  .parqueo-space-occupied { border-style: double; border-width: 4px; }
+}

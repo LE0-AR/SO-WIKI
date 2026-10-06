@@ -32,3 +32,26 @@ Para ejecutar este proyecto en tu entorno local, asegúrate de tener instalado *
 ```bash
 git clone [https://github.com/LE0-AR/wiki.git](https://github.com/LE0-AR/wiki.git)
 cd wiki-main
+```
+
+## Proyecto 2: Parqueo concurrente
+
+La nueva sección **Parqueo**, disponible en `/parqueo`, añade vehículos ejecutados con Worker Threads, sincronización mediante memoria compartida y Atomics, demostraciones de carrera, detección de interbloqueos con RAG/DFS y recuperación. El simulador de memoria permanece independiente.
+
+Para iniciar el laboratorio sin credenciales de Supabase, ejecutar en dos terminales:
+
+```sh
+# Terminal 1, desde wiki-backend
+npm install
+npm run dev:parqueo
+```
+
+```sh
+# Terminal 2, desde wiki-frontend
+npm install
+npm run dev
+```
+
+La guía completa está en `docs/parqueo.md`: requisitos, configuración, pruebas y evidencia Linux/WSL2. Los documentos originales de propuesta y directrices se muestran dentro de la página. La demostración académica requiere comprobar los hilos en Linux real; no basta con ejecutar el frontend.
+
+Ejecutar `npm test` en ambos directorios; en el frontend, ejecutar también `npm run lint` y `npm run build`. Las dependencias nuevas requieren actualizar los archivos de bloqueo con `npm install` antes de utilizar `npm ci`.

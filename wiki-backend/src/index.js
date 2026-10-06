@@ -1,4 +1,6 @@
 const express = require('express');
+const http = require('node:http');
+const { attachParqueo } = require('./parqueo/attach');
 const cors = require('cors');
 require('dotenv').config();
 
@@ -292,7 +294,23 @@ app.get('/', (req, res) => {
   res.send('Backend de Wiki funcionando correctamente ');
 });
 
-// Arrancar el servidor
-app.listen(PORT, () => {
+// El laboratorio y la API de la wiki comparten el mismo servidor HTTP.
+const server = http.createServer(app);
+const parqueo = attachParqueo({ app, server });
+server.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
+
+let cerrando = false;
+async function cerrarServidor() {
+  if (cerrando) return;
+  cerrando = true;
+  try {
+    await parqueo.close();
+  } catch (error) {
+    console.error('Error al cerrar el servidor:', error.message);
+    process.exitCode = 1;
+  }
+}
+process.once('SIGINT', cerrarServidor);
+process.once('SIGTERM', cerrarServidor);

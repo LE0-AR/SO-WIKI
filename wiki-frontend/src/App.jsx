@@ -6,12 +6,14 @@ import { Home } from './pages/home';
 import { Articulos } from './pages/articulos'; // <-- El plural (tarjetas)
 import { Articulo } from './pages/articulo';   // <-- ¡ESTA ES LA LÍNEA QUE TE FALTA! (Singular)
 import { Simulacion } from './pages/simulacion';
+import { Parqueo } from './pages/parqueo';
 import { Login } from './pages/login';
 import { Panel } from './pages/panel';
 import { Categoria } from './pages/categoria';
 
 function Navbar({ usuario }) {
-  
+  const [menuAbierto, setMenuAbierto] = useState(false);
+
   const cerrarSesion = async () => {
     await supabase.auth.signOut();
     window.location.href = '/'; // Redirige al inicio al salir
@@ -23,14 +25,15 @@ function Navbar({ usuario }) {
         <Link className="navbar-brand fw-bold fs-4" to="/">
           <span className="text-dark">WIKI</span><span className="text-success">-SO</span>
         </Link>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <button className="navbar-toggler" type="button" aria-controls="navbarNav" aria-expanded={menuAbierto} aria-label="Abrir o cerrar navegación" onClick={() => setMenuAbierto(abierto => !abierto)}>
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="collapse navbar-collapse justify-content-center" id="navbarNav">
-          <ul className="navbar-nav gap-4">
-            <li className="nav-item"><Link className="nav-link fw-semibold text-dark" to="/">Inicio</Link></li>
-            <li className="nav-item"><Link className="nav-link fw-semibold text-dark" to="/articulos">Blog</Link></li>
-            <li className="nav-item"><Link className="nav-link fw-semibold text-dark" to="/simulacion">Simulador</Link></li>
+        <div className={`collapse navbar-collapse justify-content-center ${menuAbierto ? 'show' : ''}`} id="navbarNav">
+          <ul className="navbar-nav gap-3">
+            <li className="nav-item"><Link onClick={() => setMenuAbierto(false)} className="nav-link fw-semibold text-dark" to="/">Inicio</Link></li>
+            <li className="nav-item"><Link onClick={() => setMenuAbierto(false)} className="nav-link fw-semibold text-dark" to="/articulos">Blog</Link></li>
+            <li className="nav-item"><Link onClick={() => setMenuAbierto(false)} className="nav-link fw-semibold text-dark" to="/simulacion">Simulador</Link></li>
+            <li className="nav-item"><Link onClick={() => setMenuAbierto(false)} className="nav-link fw-semibold text-dark" to="/parqueo">Parqueo</Link></li>
           </ul>
         </div>
         
@@ -84,6 +87,7 @@ function App() {
         <Route path="/articulo/:id" element={<Articulo />} /> 
         
         <Route path="/simulacion" element={<Simulacion />} />
+        <Route path="/parqueo" element={<Parqueo />} />
         <Route path="/login" element={<Login />} />
         <Route path="/panel" element={<Panel />} />
         <Route path="/categoria" element={<Categoria />} />
