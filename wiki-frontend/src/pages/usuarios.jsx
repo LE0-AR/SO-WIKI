@@ -15,7 +15,7 @@ export const Usuarios = () => {
 
     const obtenerUsuarios = async () => {
         try {
-            const respuesta = await fetch('https://so-wiki.onrender.com/api/usuarios');
+            const respuesta = await fetch('http://localhost:3000/api/usuarios');
             if (respuesta.ok) {
                 const data = await respuesta.json();
                 setListaUsuarios(data);
@@ -52,9 +52,15 @@ export const Usuarios = () => {
         setMensaje({ texto: 'Procesando...', tipo: 'info' });
 
         try {
+            // Cambia esto:
+            // const URL_API = editandoId
+            //     ? `https://so-wiki.onrender.com/api/usuarios/${editandoId}`
+            //     : 'https://so-wiki.onrender.com/api/usuarios';
+
+            // Por esto:
             const URL_API = editandoId
-                ? `https://so-wiki.onrender.com/api/usuarios/${editandoId}`
-                : 'https://so-wiki.onrender.com/api/usuarios';
+                ? `http://localhost:3000/api/usuarios/${editandoId}`
+                : 'http://localhost:3000/api/usuarios';
             const metodo = editandoId ? 'PUT' : 'POST';
 
             const respuesta = await fetch(URL_API, {
@@ -82,10 +88,13 @@ export const Usuarios = () => {
         }
 
         try {
-            const respuesta = await fetch(`https://so-wiki.onrender.com/api/usuarios/${id}`, {
+            // Cambia esto:
+            // const respuesta = await fetch(`https://so-wiki.onrender.com/api/usuarios/${id}`, { ... });
+
+            // Por esto:
+            const respuesta = await fetch(`http://localhost:3000/api/usuarios/${id}`, {
                 method: 'DELETE'
             });
-
             if (respuesta.ok) {
                 setMensaje({ texto: 'Usuario eliminado correctamente.', tipo: 'success' });
                 obtenerUsuarios();
@@ -140,7 +149,7 @@ export const Usuarios = () => {
                                 <input type="email" className="form-control form-control-lg rounded-3 bg-light border-0 shadow-sm" name="correo" value={usuario.correo} onChange={manejarCambio} placeholder="juan@ejemplo.com" required />
                             </div>
                             <div className="col-md-6">
-                                <label className="form-label fw-bold text-dark small text-uppercase" style={{ letterSpacing: '0.5px' }}>Contraseña {editandoId && <span className="text-muted text-lowercase" style={{letterSpacing: '0'}}>(Dejar en blanco para no cambiarla)</span>}</label>
+                                <label className="form-label fw-bold text-dark small text-uppercase" style={{ letterSpacing: '0.5px' }}>Contraseña {editandoId && <span className="text-muted text-lowercase" style={{ letterSpacing: '0' }}>(Dejar en blanco para no cambiarla)</span>}</label>
                                 <input type="password" className="form-control form-control-lg rounded-3 bg-light border-0 shadow-sm" name="password" value={usuario.password} onChange={manejarCambio} placeholder="••••••••" required={!editandoId} />
                             </div>
                             <div className="col-md-6">

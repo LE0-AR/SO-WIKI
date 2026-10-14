@@ -3,12 +3,13 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { supabase } from './supabaseClient'; 
 
 import { Home } from './pages/home';
-import { Articulos } from './pages/articulos'; // <-- El plural (tarjetas)
-import { Articulo } from './pages/articulo';   // <-- ¡ESTA ES LA LÍNEA QUE TE FALTA! (Singular)
+import { Articulos } from './pages/articulos'; 
+import { Articulo } from './pages/articulo';   
 import { Simulacion } from './pages/simulacion';
 import { Login } from './pages/login';
 import { Panel } from './pages/panel';
 import { Categoria } from './pages/categoria';
+import { Usuarios } from './pages/usuarios'; 
 
 function Navbar({ usuario }) {
   
@@ -58,15 +59,37 @@ function Navbar({ usuario }) {
 function App() {
   const [usuario, setUsuario] = useState(null);
 
-  useEffect(() => {
+useEffect(() => {
+    // NUEVA FUNCIÓN: Busca el rol del usuario en la base de datos cuando inicia sesión
+    const cargarPerfilConRol = async (usuarioAuth) => {
+      if (!usuarioAuth) {
+        setUsuario(null);
+        return;
+      }
+
+      // Vamos a tu nueva tabla y buscamos qué rol tiene asignado este correo
+      const { data, error } = await supabase
+        .from('usuarios')
+        .select('rol, nombre')
+        .eq('correo', usuarioAuth.email)
+        .single();
+
+      // Guardamos en el estado la mezcla de ambos mundos: su acceso seguro + su rol
+      setUsuario({
+        ...usuarioAuth, // Mantiene el email y el token de seguridad
+        rol: data?.rol || 'Lector', // Si no lo encuentra, lo dejamos sin permisos por seguridad
+        nombreCompleto: data?.nombre || 'Usuario'
+      });
+    };
+
     // 1. Revisar si hay una sesión guardada al abrir la página
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUsuario(session?.user ?? null);
+      cargarPerfilConRol(session?.user);
     });
 
     // 2. Quedarse escuchando si el usuario hace login o logout
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUsuario(session?.user ?? null);
+      cargarPerfilConRol(session?.user);
     });
 
     return () => subscription.unsubscribe();
@@ -87,6 +110,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/panel" element={<Panel />} />
         <Route path="/categoria" element={<Categoria />} />
+        <Route path="/usuarios" element={<Usuarios />} />
       </Routes>
     </BrowserRouter>
   );

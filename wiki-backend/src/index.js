@@ -68,7 +68,7 @@ app.get('/api/articulos/:id', async (req, res) => {
 
 // Ruta para crear un nuevo artículo (con soporte de auditoría)
 app.post('/api/articulos', async (req, res) => {
-  // 🌟 AÑADIDOS LOS NUEVOS CAMPOS AQUÍ 🌟
+  //  AÑADIDOS LOS NUEVOS CAMPOS AQUÍ 
   const { titulo, contenido, creado_por, categoria, descripcion, imagen } = req.body;
 
   if (!titulo || !contenido) {
@@ -78,7 +78,7 @@ app.post('/api/articulos', async (req, res) => {
   try {
     const { data, error } = await supabase
       .from('articulos')
-      // 🌟 SE INSERTAN LOS NUEVOS CAMPOS AQUÍ 🌟
+      //  SE INSERTAN LOS NUEVOS CAMPOS AQUÍ 
       .insert([{ titulo, contenido, creado_por, categoria, descripcion, imagen }])
       .select();
 
@@ -105,18 +105,17 @@ app.post('/api/articulos', async (req, res) => {
 // Ruta para actualizar un artículo existente (con auditoría)
 app.put('/api/articulos/:id', async (req, res) => {
   const { id } = req.params;
-  // 🌟 AÑADIDOS LOS NUEVOS CAMPOS AQUÍ 🌟
+  //  AÑADIDOS LOS NUEVOS CAMPOS AQUÍ 
   const { titulo, contenido, actualizado_por, categoria, descripcion, imagen } = req.body;
 
   try {
- const { data, error } = await supabase
+    const { data, error } = await supabase
       .from('articulos')
       .update({ titulo, contenido, categoria, descripcion, imagen })
       .eq('id', id)
       .select();
 
     if (error) {
-      // AGREGA ESTA LÍNEA PARA VER EL MOTIVO EXACTO DEL RECHAZO
       console.error("ERROR EXACTO DE SUPABASE:", error); 
       return res.status(400).json({ error: error.message });
     }
@@ -162,6 +161,108 @@ app.delete('/api/articulos/:id', async (req, res) => {
     res.status(200).json({ message: 'Artículo eliminado con éxito' });
   } catch (err) {
     res.status(500).json({ error: 'Error interno al eliminar el artículo' });
+  }
+});
+
+// ==========================================
+// RUTAS PARA EL PANEL DE USUARIOS (CRUD)
+// ==========================================
+
+// 1. Obtener todos los usuarios
+app.get('/api/usuarios', async (req, res) => {
+  try {
+    const { data, error } = await supabase.from('usuarios').select('*');
+    if (error) throw error;
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+// ==========================================
+// RUTAS PARA EL PANEL DE USUARIOS (CRUD)
+// ==========================================
+
+// 1. Obtener todos los usuarios (ESTE LO DEJAS INTACTO)
+app.get('/api/usuarios', async (req, res) => {
+  try {
+    const { data, error } = await supabase.from('usuarios').select('*');
+    if (error) throw error;
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// 2. CREAR UN NUEVO USUARIO (AQUÍ PEGAS EL CÓDIGO NUEVO)
+app.post('/api/usuarios', async (req, res) => {
+  const { nombre, correo, password, rol } = req.body;
+  
+  if (!nombre || !correo || !password) {
+    return res.status(400).json({ error: 'Faltan datos obligatorios' });
+  }
+
+  try {
+    // PASO 1: Crear la credencial real en la bóveda de Autenticación (Login)
+    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+      email: correo,
+      password: password,
+      email_confirm: true 
+    });
+
+    if (authError) {
+      return res.status(400).json({ error: 'Error en Auth: ' + authError.message });
+    }
+
+    // PASO 2: Guardar el perfil visual y el rol en tu tabla 'usuarios'
+    const { data: tableData, error: tableError } = await supabase
+      .from('usuarios')
+      .insert([{ nombre, correo, password, rol }])
+      .select();
+
+    if (tableError) {
+      return res.status(400).json({ error: 'Error en Tabla: ' + tableError.message });
+    }
+
+    res.status(201).json(tableData[0]);
+  } catch (err) {
+    res.status(500).json({ error: 'Error interno al crear usuario' });
+  }
+});
+
+// 3. Actualizar un usuario
+app.put('/api/usuarios/:id', async (req, res) => {
+  const { id } = req.params;
+  const { nombre, correo, password, rol } = req.body;
+
+  try {
+    // Si la contraseña viene vacía, no la tocamos en la base de datos
+    const datosActualizar = password 
+      ? { nombre, correo, password, rol } 
+      : { nombre, correo, rol };
+
+    const { data, error } = await supabase
+      .from('usuarios')
+      .update(datosActualizar)
+      .eq('id', id)
+      .select();
+
+    if (error) throw error;
+    res.status(200).json(data[0]);
+  } catch (err) {
+    res.status(500).json({ error: 'Error interno al actualizar usuario' });
+  }
+});
+
+// 4. Eliminar un usuario
+app.delete('/api/usuarios/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const { error } = await supabase.from('usuarios').delete().eq('id', id);
+    if (error) throw error;
+    res.status(200).json({ message: 'Usuario eliminado correctamente' });
+  } catch (err) {
+    res.status(500).json({ error: 'Error interno al eliminar usuario' });
   }
 });
 

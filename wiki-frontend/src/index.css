@@ -5,11 +5,11 @@
   --border: #e5e4e7;
   --code-bg: #f4f3ec;
   --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
+  --accent-bg: #aa3bff1a;
+  --accent-border: #aa3bff80;
+  --social-bg: #f4f3ec80;
   --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+    #0000001a 0 10px 15px -3px, #0000000d 0 4px 6px -2px;
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
@@ -94,7 +94,6 @@ h2 {
 p {
   margin: 0;
 }
-
 code,
 .counter {
   font-family: var(--mono);
@@ -102,7 +101,6 @@ code,
   border-radius: 4px;
   color: var(--text-h);
 }
-
 code {
   font-size: 15px;
   line-height: 135%;

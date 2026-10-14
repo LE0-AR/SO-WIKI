@@ -10,11 +10,11 @@ export const Articulos = () => {
     useEffect(() => {
         const cargarDatos = async () => {
             try {
-               const respuesta = await fetch('https://wiki-oewl.onrender.com/api/articulos');
+                const respuesta = await fetch('https://wiki-oewl.onrender.com/api/articulos');
                 if (respuesta.ok) {
                     const data = await respuesta.json();
                     setArticulos(data);
-                    
+
                     // Extraer automáticamente las categorías de los artículos para el panel
                     const categoriasUnicas = ['Todas', ...new Set(data.map(art => art.categoria).filter(Boolean))];
                     setCategorias(categoriasUnicas);
@@ -30,8 +30,8 @@ export const Articulos = () => {
     }, []);
 
     // Filtramos los artículos según lo que el usuario seleccione en el panel
-    const articulosFiltrados = categoriaSeleccionada === 'Todas' 
-        ? articulos 
+    const articulosFiltrados = categoriaSeleccionada === 'Todas'
+        ? articulos
         : articulos.filter(art => art.categoria === categoriaSeleccionada);
 
     if (cargando) {
@@ -58,7 +58,7 @@ export const Articulos = () => {
                             <div className="card-body p-3">
                                 <div className="list-group list-group-flush">
                                     {categorias.map((cat, index) => (
-                                        <button 
+                                        <button
                                             key={index}
                                             onClick={() => setCategoriaSeleccionada(cat)}
                                             className={`list-group-item list-group-item-action border-0 rounded-3 mb-1 px-3 py-2 ${categoriaSeleccionada === cat ? 'bg-primary text-white fw-bold' : 'text-dark'}`}
@@ -76,15 +76,17 @@ export const Articulos = () => {
                         <div className="row g-4">
                             {articulosFiltrados.map((art) => (
                                 <div className="col-md-6" key={art.id}>
-                                    <div className="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
-                                        
+                                    {/* Agregamos d-flex y flex-column a la tarjeta principal */}   
+                                    <div className="card h-100 border-0 shadow-sm rounded-4 overflow-hidden d-flex flex-column">
+
                                         {/* Imagen de portada */}
                                         {art.imagen ? (
-                                            <img 
-                                                src={art.imagen} 
-                                                alt={art.titulo} 
-                                                className="card-img-top" 
-                                                style={{ height: '220px', objectFit: 'cover' }} 
+                                            <img
+                                                src={art.imagen}
+                                                alt={art.titulo}
+                                                className="card-img-top"
+                                                /* CAMBIO CLAVE: objectFit: 'contain', fondo gris claro y un poco de padding */
+                                                style={{ height: '220px', objectFit: 'contain', backgroundColor: '#f8f9fa', padding: '15px' }}
                                             />
                                         ) : (
                                             <div className="bg-secondary bg-opacity-10 d-flex justify-content-center align-items-center" style={{ height: '220px' }}>
@@ -92,8 +94,9 @@ export const Articulos = () => {
                                             </div>
                                         )}
 
-                                        <div className="card-body p-4">
-                                            <span className="badge bg-success rounded-pill mb-3 text-uppercase" style={{ letterSpacing: '0.5px' }}>
+                                        <div className="card-body p-4 d-flex flex-column">
+                                            {/* align-self-start evita que el badge se estire */}
+                                            <span className="badge bg-success rounded-pill mb-3 text-uppercase align-self-start" style={{ letterSpacing: '0.5px' }}>
                                                 {art.categoria || 'GENERAL'}
                                             </span>
                                             <h5 className="card-title fw-bold text-dark mb-3">
@@ -103,8 +106,9 @@ export const Articulos = () => {
                                                 {art.descripcion || 'Sin descripción disponible. Haz clic para leer el contenido completo.'}
                                             </p>
                                         </div>
-                                        
-                                        <div className="card-footer bg-white border-0 px-4 pb-4 pt-0 d-flex justify-content-between align-items-center">
+
+                                        {/* CAMBIO CLAVE: Agregamos "mt-auto" al final de las clases del footer para empujarlo al fondo */}
+                                        <div className="card-footer bg-white border-0 px-4 pb-4 pt-0 d-flex justify-content-between align-items-center mt-auto">
                                             <span className="text-muted small fw-semibold">
                                                 {art.created_at ? new Date(art.created_at).toLocaleDateString() : 'Reciente'}
                                             </span>
@@ -115,7 +119,7 @@ export const Articulos = () => {
                                     </div>
                                 </div>
                             ))}
-                            
+
                             {articulosFiltrados.length === 0 && (
                                 <div className="col-12 text-center text-muted py-5 mt-4 card border-0 shadow-sm rounded-4">
                                     <p className="mb-0">No hay artículos publicados en esta categoría.</p>
