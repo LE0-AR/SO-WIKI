@@ -9,8 +9,16 @@ export const Panel = () => {
     const [listaCategorias, setListaCategorias] = useState([]);
     const [listaArticulos, setListaArticulos] = useState([]);
     const [editandoId, setEditandoId] = useState(null);
+    const [usuarioAuth, setUsuarioAuth] = useState(null);
 
     useEffect(() => {
+        // 1. Identificamos al administrador actual
+        const usuarioGuardado = localStorage.getItem('usuarioWiki');
+        if (usuarioGuardado) {
+            setUsuarioAuth(JSON.parse(usuarioGuardado));
+        }
+
+        // 2. Cargamos los datos
         const cargarDatosIniciales = async () => {
             const { data: catData } = await supabase.from('categoria').select('nombre');
             if (catData && catData.length > 0) {
@@ -24,7 +32,6 @@ export const Panel = () => {
 
     const obtenerArticulos = async () => {
         try {
-            // URL actualizada a tu servidor de producción
             const respuesta = await fetch('https://so-wiki.onrender.com/api/articulos');
             if (respuesta.ok) {
                 const data = await respuesta.json();
@@ -87,7 +94,6 @@ export const Panel = () => {
             const articuloFinal = { ...articulo, imagen: urlImagenFinal };
             setMensaje({ texto: editandoId ? 'Actualizando artículo...' : 'Guardando artículo...', tipo: 'info' });
 
-            // URL actualizada a tu servidor de producción
             const URL_API = editandoId
                 ? `https://so-wiki.onrender.com/api/articulos/${editandoId}`
                 : 'https://so-wiki.onrender.com/api/articulos';
@@ -114,13 +120,20 @@ export const Panel = () => {
     return (
         <div className="bg-light min-vh-100 py-5">
             <div className="container" style={{ maxWidth: '900px' }}>
+                
+                {/* ENCABEZADO DEL PANEL */}
                 <div className="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-3">
                     <div>
-                        <h2 className="fw-bold text-dark mb-0">Gestión de Publicaciones</h2>
-                        <p className="text-secondary mt-1 mb-0">Crea o edita artículos para la base de conocimientos.</p>
+                        <h2 className="fw-bold text-dark mb-0">Panel Administrativo Maestro</h2>
+                        <p className="text-secondary mt-1 mb-0">Gestión total de la base de conocimientos y accesos.</p>
+                        {usuarioAuth && (
+                            <span className="badge bg-danger mt-2 px-3 py-2 rounded-pill">
+                                <i className="bi bi-shield-lock-fill me-1"></i> Modo: {usuarioAuth.rol}
+                            </span>
+                        )}
                     </div>
                     <div className="d-flex flex-wrap gap-2">
-                        {/* EL NUEVO BOTÓN DE USUARIOS */}
+                        {/* ESTE PANEL SÍ TIENE EL BOTÓN DE USUARIOS (Porque es el del Admin) */}
                         <Link to="/usuarios" className="btn btn-outline-primary rounded-pill fw-bold px-4 shadow-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-people-fill me-2 mb-1" viewBox="0 0 16 16">
                                 <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
@@ -166,7 +179,6 @@ export const Panel = () => {
                             </div>
                         </div>
 
-                        {/* NUEVA ZONA DE CARGA DE IMAGEN (Drag & Drop Simulado) */}
                         <div className="mb-4">
                             <label className="form-label fw-bold text-dark small text-uppercase" style={{ letterSpacing: '0.5px' }}>Imagen de Portada</label>
 
@@ -180,7 +192,6 @@ export const Panel = () => {
                                 </h6>
                                 <p className="text-muted small mb-0">Soporta JPG, PNG o WEBP</p>
 
-                                {/* Input invisible que cubre toda la caja */}
                                 <input
                                     type="file"
                                     accept="image/*"
@@ -190,7 +201,6 @@ export const Panel = () => {
                                 />
                             </div>
 
-                            {/* Insignia de imagen guardada en edición */}
                             {articulo.imagen && !imagenArchivo && (
                                 <div className="mt-3 text-secondary small d-flex align-items-center gap-2 bg-light p-2 rounded-3 border">
                                     <span className="badge bg-success rounded-pill px-3 py-2">Portada guardada en base de datos</span>
@@ -217,7 +227,6 @@ export const Panel = () => {
                     </form>
                 </div>
 
-                {/* TABLA INFERIOR */}
                 <div className="card border-0 shadow-sm rounded-4 p-4 bg-white">
                     <h5 className="fw-bold text-dark mb-4">Artículos Publicados</h5>
                     <div className="table-responsive">
