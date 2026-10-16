@@ -8,7 +8,7 @@ import { Articulo } from './pages/articulo';
 import { Simulacion } from './pages/simulacion';
 import { Login } from './pages/login';
 import { Panel } from './pages/panel';
-import { EditorPanel } from './pages/Editor'; 
+import { EditorPanel } from './pages/editor'; 
 import { Categoria } from './pages/categoria';
 import { Usuarios } from './pages/usuarios';
 import { Parqueo } from './pages/parqueo';
