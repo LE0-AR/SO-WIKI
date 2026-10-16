@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import { supabase } from './supabaseClient'; 
+import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { supabase } from './supabaseClient';
 
 import { Home } from './pages/home';
-import { Articulos } from './pages/articulos'; // <-- El plural (tarjetas)
-import { Articulo } from './pages/articulo';   // <-- ¡ESTA ES LA LÍNEA QUE TE FALTA! (Singular)
+import { Articulos } from './pages/articulos';
+import { Articulo } from './pages/articulo';
 import { Simulacion } from './pages/simulacion';
 import { Login } from './pages/login';
 import { Panel } from './pages/panel';
+import { EditorPanel } from './pages/Editor'; 
 import { Categoria } from './pages/categoria';
+import { Usuarios } from './pages/usuarios';
+import { Parqueo } from './pages/parqueo';
 
-function Navbar({ usuario }) {
-  
+function Navbar({ usuario, setUsuario }) {
   const cerrarSesion = async () => {
     await supabase.auth.signOut();
-    window.location.href = '/'; // Redirige al inicio al salir
+    localStorage.removeItem('usuarioWiki');
+    setUsuario(null);
+    window.location.href = '/';
   };
 
   return (
@@ -31,19 +35,28 @@ function Navbar({ usuario }) {
             <li className="nav-item"><Link className="nav-link fw-semibold text-dark" to="/">Inicio</Link></li>
             <li className="nav-item"><Link className="nav-link fw-semibold text-dark" to="/articulos">Blog</Link></li>
             <li className="nav-item"><Link className="nav-link fw-semibold text-dark" to="/simulacion">Simulador</Link></li>
+            <li className="nav-item"><Link className="nav-link fw-semibold text-dark" to="/parqueo">Parqueo</Link></li>
           </ul>
         </div>
-        
+
         <div className="d-none d-lg-flex align-items-center gap-3">
           <form className="d-flex" role="search">
             <input className="form-control me-2 rounded-pill bg-light border-0" type="search" placeholder="Buscar artículos..." />
             <button className="btn btn-outline-success rounded-pill px-4 fw-bold" type="submit">Buscar</button>
           </form>
-          
-          {/* LÓGICA DE SESIÓN: Si hay usuario mostramos Panel/Salir, si no, Ingresar */}
+
           {usuario ? (
             <>
-              <Link to="/panel" className="btn btn-outline-dark rounded-pill px-3 fw-bold">Panel</Link>
+              {/* SI ES ADMIN: Ve el botón Panel que lo lleva a /panel */}
+              {(usuario.rol === 'Admin' || usuario.rol === 'Administrador') && (
+                <Link to="/panel" className="btn btn-outline-dark rounded-pill px-3 fw-bold">Panel Admin</Link>
+              )}
+
+              {/* SI ES EDITOR: Ve el botón Redactar que lo lleva a /editor */}
+              {(usuario.rol === 'Editor') && (
+                <Link to="/editor" className="btn btn-outline-dark rounded-pill px-3 fw-bold">Redactar</Link>
+              )}
+
               <button onClick={cerrarSesion} className="btn btn-dark rounded-pill px-3 fw-bold">Salir</button>
             </>
           ) : (
@@ -55,38 +68,71 @@ function Navbar({ usuario }) {
   );
 }
 
+const RutaPrivada = ({ children, rolesPermitidos }) => {
+  const usuarioGuardado = localStorage.getItem('usuarioWiki');
+  const usuario = usuarioGuardado ? JSON.parse(usuarioGuardado) : null;
+
+  if (!usuario) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!rolesPermitidos.includes(usuario.rol)) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
+
 function App() {
   const [usuario, setUsuario] = useState(null);
 
   useEffect(() => {
-    // 1. Revisar si hay una sesión guardada al abrir la página
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUsuario(session?.user ?? null);
-    });
-
-    // 2. Quedarse escuchando si el usuario hace login o logout
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUsuario(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
+    const usuarioGuardado = localStorage.getItem('usuarioWiki');
+    if (usuarioGuardado) {
+      setUsuario(JSON.parse(usuarioGuardado));
+    }
   }, []);
 
   return (
     <BrowserRouter>
-      {/* Pasamos el estado del usuario al menú */}
-      <Navbar usuario={usuario} />
+      <Navbar usuario={usuario} setUsuario={setUsuario} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/articulos" element={<Articulos />} />
-        
-        {/* 2. AGREGAMOS LA RUTA DINÁMICA DEL ARTÍCULO */}
-        <Route path="/articulo/:id" element={<Articulo />} /> 
-        
+        <Route path="/articulo/:id" element={<Articulo />} />
         <Route path="/simulacion" element={<Simulacion />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/panel" element={<Panel />} />
+        <Route path="/login" element={<Login setUsuario={setUsuario} />} />
         <Route path="/categoria" element={<Categoria />} />
+        <Route path="/parqueo" element={<Parqueo />} />
+        {/* --- RUTAS BLINDADAS --- */}
+        {/* El panel maestro AHORA SÓLO ACEPTA ADMINS */}
+        <Route
+          path="/panel"
+          element={
+            <RutaPrivada rolesPermitidos={['Admin', 'Administrador']}>
+              <Panel />
+            </RutaPrivada>
+          }
+        />
+
+        {/* Esta es la NUEVA RUTA EXCLUSIVA PARA EL EDITOR */}
+        <Route
+          path="/editor"
+          element={
+            <RutaPrivada rolesPermitidos={['Admin', 'Administrador', 'Editor']}>
+              <EditorPanel />
+            </RutaPrivada>
+          }
+        />
+
+        <Route
+          path="/usuarios"
+          element={
+            <RutaPrivada rolesPermitidos={['Admin', 'Administrador']}>
+              <Usuarios />
+            </RutaPrivada>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

@@ -6,7 +6,10 @@ export const Articulo = () => {
     const [articulo, setArticulo] = useState(null);
     const [cargando, setCargando] = useState(true);
 
-    useEffect(() => {
+useEffect(() => {
+        // ESTA ES LA LÍNEA MÁGICA: Obliga a la ventana a subir hasta el tope (0,0) al cargar la página
+        window.scrollTo(0, 0);
+
         const cargarArticulo = async () => {
             try {
                const URL_API = `https://so-wiki.onrender.com/api/articulos/${id}`;
@@ -64,19 +67,33 @@ export const Articulo = () => {
 
             <div className="container" style={{ maxWidth: '800px' }}>
 
-                {/* BANNER DE IMAGEN DE PORTADA */}
+                {/* IMAGEN DE PORTADA AJUSTADA (Forzada con estilos en línea) */}
                 {articulo.imagen && (
-                    <div className="mb-5 rounded-4 overflow-hidden shadow-sm border" style={{ height: '400px' }}>
+                    <div 
+                        style={{ 
+                            width: '100%', 
+                            display: 'flex', 
+                            justifyContent: 'center', 
+                            marginBottom: '2rem' 
+                        }}
+                    >
                         <img
                             src={articulo.imagen}
                             alt={articulo.titulo}
-                            className="w-100 h-100"
-                            style={{ objectFit: 'cover', objectPosition: 'center' }}
+                            style={{ 
+                                maxWidth: '800px', /* Ancho máximo para que no se desborde */
+                                width: '100%',     /* Se adapta a pantallas pequeñas */
+                                height: 'auto',    /* Mantiene las proporciones originales sin recortar */
+                                maxHeight: '400px',/* Evita que se haga altísima en pantallas grandes */
+                                objectFit: 'contain', /* Asegura que la imagen completa sea visible */
+                                borderRadius: '10px',
+                                boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                            }}
                         />
                     </div>
                 )}
 
-                <div className="d-flex align-items-center gap-3 mb-4">
+                <div className="d-flex align-items-center gap-3 mb-4 mt-2">
                     <span className="badge bg-success rounded-pill px-3 py-2 text-uppercase" style={{ letterSpacing: '0.5px' }}>
                         {articulo.categoria || 'General'}
                     </span>

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { supabase } from '../supabaseClient'; // Importamos tu conexión
+import { supabase } from '../supabaseClient'; 
 
-export const Login = () => {
+export const Login = ({ setUsuario }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const [cargando, setCargando] = useState(false); // Para mostrar que está pensando
+    const [cargando, setCargando] = useState(false); 
     
     const navigate = useNavigate();
 
@@ -15,19 +15,39 @@ export const Login = () => {
         setError('');
         setCargando(true);
 
-        // 1. Enviamos los datos a la autenticación real de Supabase
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password,
-        });
+        try {
+            // 1. Consultamos tu tabla personalizada 'usuarios'
+            const { data, error } = await supabase
+                .from('usuarios')
+                .select('*')
+                .eq('correo', email)
+                .eq('password', password)
+                .single(); // Esperamos encontrar un solo registro que coincida
 
-        // 2. Evaluamos la respuesta
-        if (error) {
-            setError('Credenciales incorrectas o usuario no registrado.');
+            // 2. Evaluamos la respuesta
+            if (error || !data) {
+                setError('Credenciales incorrectas o usuario no registrado.');
+            } else {
+                // Guardamos los datos del usuario en el navegador
+                localStorage.setItem('usuarioWiki', JSON.stringify(data));
+                
+                // Le avisamos a la aplicación que ya entramos
+                if (setUsuario) setUsuario(data);
+                
+                // 👉 EL CAMBIO CLAVE: Redirigimos a la ruta correcta según el rol
+                if (data.rol === 'Admin' || data.rol === 'Administrador') {
+                    navigate('/panel');
+                } else if (data.rol === 'Editor') {
+                    navigate('/editor');
+                } else {
+                    navigate('/'); // Si es un rol desconocido, lo mandamos al inicio
+                }
+            }
+        } catch (err) {
+            console.error("Error en login:", err);
+            setError('Hubo un error de conexión con la base de datos.');
+        } finally {
             setCargando(false);
-        } else {
-            // ¡Éxito! Supabase confirmó que existe, vamos al panel
-            navigate('/panel');
         }
     };
 
