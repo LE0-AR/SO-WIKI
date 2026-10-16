@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, Navigate, useNavigate } from 'react-router-dom';
 import { supabase } from './supabaseClient';
 
 import { Home } from './pages/home';
@@ -14,57 +14,113 @@ import { Usuarios } from './pages/usuarios';
 import { Parqueo } from './pages/parqueo';
 
 function Navbar({ usuario, setUsuario }) {
+  const navigate = useNavigate();
+  const [textoBusqueda, setTextoBusqueda] = useState('');
+  
+  // NUEVO: Controlamos el estado del menú móvil con React, no con Bootstrap JS
+  const [menuAbierto, setMenuAbierto] = useState(false);
+
+  const toggleMenu = () => setMenuAbierto(!menuAbierto);
+  const cerrarMenu = () => setMenuAbierto(false); // Función para cerrar al hacer clic en cualquier opción
+
   const cerrarSesion = async () => {
     await supabase.auth.signOut();
     localStorage.removeItem('usuarioWiki');
     setUsuario(null);
+    cerrarMenu();
     window.location.href = '/';
   };
 
+  const manejarBusquedaGlobal = (e) => {
+    e.preventDefault();
+    if (textoBusqueda.trim() !== '') {
+      navigate(`/articulos?q=${encodeURIComponent(textoBusqueda)}`);
+      setTextoBusqueda(''); 
+      cerrarMenu(); // Cierra el menú en celular al buscar
+    }
+  };
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-white py-3 shadow-sm">
-      <div className="container">
-        <Link className="navbar-brand fw-bold fs-4" to="/">
-          <span className="text-dark">WIKI</span><span className="text-success">-SO</span>
-        </Link>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse justify-content-center" id="navbarNav">
-          <ul className="navbar-nav gap-4">
-            <li className="nav-item"><Link className="nav-link fw-semibold text-dark" to="/">Inicio</Link></li>
-            <li className="nav-item"><Link className="nav-link fw-semibold text-dark" to="/articulos">Blog</Link></li>
-            <li className="nav-item"><Link className="nav-link fw-semibold text-dark" to="/simulacion">Simulador</Link></li>
-            <li className="nav-item"><Link className="nav-link fw-semibold text-dark" to="/parqueo">Parqueo</Link></li>
-          </ul>
-        </div>
+    <>
+      {/* NUEVO: Estilo inyectado para que el menú flote SOBRE el contenido en celular y no empuje nada hacia abajo */}
+      <style>
+        {`
+          @media (max-width: 991.98px) {
+            .mobile-overlay-menu {
+              position: absolute;
+              top: 100%;
+              left: 0;
+              right: 0;
+              background-color: white;
+              box-shadow: 0 1rem 3rem rgba(0,0,0,0.15);
+              padding: 1.5rem;
+              z-index: 1050;
+              border-top: 1px solid #eaeaea;
+            }
+          }
+        `}
+      </style>
 
-        <div className="d-none d-lg-flex align-items-center gap-3">
-          <form className="d-flex" role="search">
-            <input className="form-control me-2 rounded-pill bg-light border-0" type="search" placeholder="Buscar artículos..." />
-            <button className="btn btn-outline-success rounded-pill px-4 fw-bold" type="submit">Buscar</button>
-          </form>
+      {/* position-relative es necesario para que el menú absoluto sepa de dónde flotar */}
+      <nav className="navbar navbar-expand-lg navbar-light bg-white py-3 shadow-sm position-relative">
+        <div className="container">
+          <Link className="navbar-brand fw-bold fs-4" to="/" onClick={cerrarMenu}>
+            <span className="text-dark">WIKI</span><span className="text-success">-SO</span>
+          </Link>
+          
+          {/* Botón de Hamburguesa ejecutando toggleMenu de React */}
+          <button className="navbar-toggler border-0 shadow-none" type="button" onClick={toggleMenu}>
+            <span className="navbar-toggler-icon"></span>
+          </button>
 
-          {usuario ? (
-            <>
-              {/* SI ES ADMIN: Ve el botón Panel que lo lleva a /panel */}
-              {(usuario.rol === 'Admin' || usuario.rol === 'Administrador') && (
-                <Link to="/panel" className="btn btn-outline-dark rounded-pill px-3 fw-bold">Panel Admin</Link>
+          {/* Menú normal en PC, pero flotante en móvil (mobile-overlay-menu). Usamos el estado 'show' de React */}
+          <div className={`collapse navbar-collapse mobile-overlay-menu ${menuAbierto ? 'show' : ''}`}>
+            
+            <ul className="navbar-nav mx-auto gap-2 gap-lg-4 my-3 my-lg-0 text-center">
+              <li className="nav-item">
+                <Link className="nav-link fw-semibold text-dark" to="/" onClick={cerrarMenu}>Inicio</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link fw-semibold text-dark" to="/articulos" onClick={cerrarMenu}>Blog</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link fw-semibold text-dark" to="/simulacion" onClick={cerrarMenu}>Simulador</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link fw-semibold text-dark" to="/parqueo" onClick={cerrarMenu}>Parqueo</Link>
+              </li>
+            </ul>
+
+            <div className="d-flex flex-column flex-lg-row align-items-center gap-3">
+              <form className="d-flex w-100" role="search" onSubmit={manejarBusquedaGlobal}>
+                <input 
+                  className="form-control me-2 rounded-pill bg-light border-0" 
+                  type="search" 
+                  placeholder="Buscar artículos..." 
+                  value={textoBusqueda}
+                  onChange={(e) => setTextoBusqueda(e.target.value)}
+                />
+                <button className="btn btn-outline-success rounded-pill px-4 fw-bold" type="submit">Buscar</button>
+              </form>
+
+              {usuario ? (
+                <div className="d-flex flex-column flex-lg-row gap-2 w-100">
+                  {(usuario.rol === 'Admin' || usuario.rol === 'Administrador') && (
+                    <Link to="/panel" className="btn btn-outline-dark rounded-pill px-3 fw-bold w-100 text-center" onClick={cerrarMenu}>Panel Admin</Link>
+                  )}
+                  {(usuario.rol === 'Editor') && (
+                    <Link to="/editor" className="btn btn-outline-dark rounded-pill px-3 fw-bold w-100 text-center" onClick={cerrarMenu}>Redactar</Link>
+                  )}
+                  <button onClick={cerrarSesion} className="btn btn-dark rounded-pill px-3 fw-bold w-100">Salir</button>
+                </div>
+              ) : (
+                <Link to="/login" className="btn btn-dark rounded-pill px-4 fw-bold w-100 text-center" onClick={cerrarMenu}>Ingresar</Link>
               )}
-
-              {/* SI ES EDITOR: Ve el botón Redactar que lo lleva a /editor */}
-              {(usuario.rol === 'Editor') && (
-                <Link to="/editor" className="btn btn-outline-dark rounded-pill px-3 fw-bold">Redactar</Link>
-              )}
-
-              <button onClick={cerrarSesion} className="btn btn-dark rounded-pill px-3 fw-bold">Salir</button>
-            </>
-          ) : (
-            <Link to="/login" className="btn btn-dark rounded-pill px-4 fw-bold">Ingresar</Link>
-          )}
+            </div>
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </>
   );
 }
 
@@ -104,8 +160,7 @@ function App() {
         <Route path="/login" element={<Login setUsuario={setUsuario} />} />
         <Route path="/categoria" element={<Categoria />} />
         <Route path="/parqueo" element={<Parqueo />} />
-        {/* --- RUTAS BLINDADAS --- */}
-        {/* El panel maestro AHORA SÓLO ACEPTA ADMINS */}
+        
         <Route
           path="/panel"
           element={
@@ -114,8 +169,6 @@ function App() {
             </RutaPrivada>
           }
         />
-
-        {/* Esta es la NUEVA RUTA EXCLUSIVA PARA EL EDITOR */}
         <Route
           path="/editor"
           element={
@@ -124,7 +177,6 @@ function App() {
             </RutaPrivada>
           }
         />
-
         <Route
           path="/usuarios"
           element={
