@@ -182,3 +182,67 @@
     border-right-color: var(--border);
   }
 }
+
+/*Parqueo*/
+
+@keyframes rotateBorder {
+  100% {
+    transform: rotate(1turn);
+  }
+}
+
+.slot-box {
+  position: relative;
+  z-index: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 3px;
+  background: #e9ecef;
+}
+
+.slot-box::before {
+  content: '';
+  position: absolute;
+  z-index: -2;
+  left: -50%;
+  top: -50%;
+  width: 200%;
+  height: 200%;
+  background-repeat: no-repeat;
+  background-size: 50% 50%, 50% 50%;
+  background-position: 0 0, 100% 0, 100% 100%, 0 100%;
+  animation: rotateBorder 3s linear infinite;
+}
+
+.slot-box::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  left: 3px;
+  top: 3px;
+  width: calc(100% - 6px);
+  height: calc(100% - 6px);
+  background: #ffffff;
+  border-radius: 9px;
+}
+
+.slot-free::before {
+  background-image: linear-gradient(#198754, #198754), linear-gradient(#a3cfbb, #198754);
+  animation-duration: 6s;
+}
+
+.slot-occupied::before {
+  background-image: linear-gradient(#ffc107, #ffc107), linear-gradient(#fff3cd, #ffca2c);
+  animation-duration: 2.5s;
+}
+
+.slot-conflict::before {
+  background-image: linear-gradient(#dc3545, #dc3545), linear-gradient(#f8d7da, #b02a37);
+  animation-duration: 1s;
+}
+
+.slot-inner {
+  position: relative;
+  z-index: 1;
+  min-height: 110px;
+}

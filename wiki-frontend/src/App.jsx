@@ -8,9 +8,10 @@ import { Articulo } from './pages/articulo';
 import { Simulacion } from './pages/simulacion';
 import { Login } from './pages/login';
 import { Panel } from './pages/panel';
-import { EditorPanel } from './pages/Editor'; // AQUÍ IMPORTAMOS TU NUEVO ARCHIVO
+import { EditorPanel } from './pages/Editor'; 
 import { Categoria } from './pages/categoria';
 import { Usuarios } from './pages/usuarios';
+import { Parqueo } from './pages/parqueo';
 
 function Navbar({ usuario, setUsuario }) {
   const cerrarSesion = async () => {
@@ -34,6 +35,7 @@ function Navbar({ usuario, setUsuario }) {
             <li className="nav-item"><Link className="nav-link fw-semibold text-dark" to="/">Inicio</Link></li>
             <li className="nav-item"><Link className="nav-link fw-semibold text-dark" to="/articulos">Blog</Link></li>
             <li className="nav-item"><Link className="nav-link fw-semibold text-dark" to="/simulacion">Simulador</Link></li>
+            <li className="nav-item"><Link className="nav-link fw-semibold text-dark" to="/parqueo">Parqueo</Link></li>
           </ul>
         </div>
 
@@ -101,7 +103,7 @@ function App() {
         <Route path="/simulacion" element={<Simulacion />} />
         <Route path="/login" element={<Login setUsuario={setUsuario} />} />
         <Route path="/categoria" element={<Categoria />} />
-
+        <Route path="/parqueo" element={<Parqueo />} />
         {/* --- RUTAS BLINDADAS --- */}
         {/* El panel maestro AHORA SÓLO ACEPTA ADMINS */}
         <Route

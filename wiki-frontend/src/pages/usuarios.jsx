@@ -15,7 +15,8 @@ export const Usuarios = () => {
 
     const obtenerUsuarios = async () => {
         try {
-            const respuesta = await fetch('http://localhost:3000/api/usuarios');
+            //const respuesta = await fetch('http://localhost:3000/api/usuarios');
+            const respuesta = await fetch('https://so-wiki.onrender.com/api/usuarios');
             if (respuesta.ok) {
                 const data = await respuesta.json();
                 setListaUsuarios(data);
@@ -59,8 +60,10 @@ export const Usuarios = () => {
 
             // Por esto:
             const URL_API = editandoId
-                ? `http://localhost:3000/api/usuarios/${editandoId}`
-                : 'http://localhost:3000/api/usuarios';
+                // ? `http://localhost:3000/api/usuarios/${editandoId}`
+                //: 'http://localhost:3000/api/usuarios';
+                ? `https://so-wiki.onrender.com/api/usuarios/${editandoId}`
+                : 'https://so-wiki.onrender.com/api/usuarios';
             const metodo = editandoId ? 'PUT' : 'POST';
 
             const respuesta = await fetch(URL_API, {
@@ -91,8 +94,9 @@ export const Usuarios = () => {
             // Cambia esto:
             // const respuesta = await fetch(`https://so-wiki.onrender.com/api/usuarios/${id}`, { ... });
 
-            // Por esto:
-            const respuesta = await fetch(`http://localhost:3000/api/usuarios/${id}`, {
+            
+           // const respuesta = await fetch(`http://localhost:3000/api/usuarios/${id}`, {
+           const respuesta = await fetch(`https://so-wiki.onrender.com/api/usuarios/${id}`, {
                 method: 'DELETE'
             });
             if (respuesta.ok) {
