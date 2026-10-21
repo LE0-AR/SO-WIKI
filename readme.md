@@ -1,6 +1,3 @@
-Aquí tienes tu **`README.md`** mejorado a nivel profesional, respetando la estructura exacta de tu borrador, tu repositorio oficial (`LE0-AR/wiki`), la separación **Cliente-Servidor (Frontend + Backend en Node/Express)** y completando los pasos de instalación que se cortaron al final:
-
----
 
 # SO-WIKI (WIKI-SO)
 
@@ -129,7 +126,7 @@ La aplicación estará disponible en tu navegador en `http://localhost:5173`.
 
 ## Autores y Contexto Académico
 
-* **Desarrollador:** Leonardo Ismael Aspuac Raxón y equipo de desarrollo[cite: 3].
+* **Desarrollador:** Grupo 4.
 * **Carrera:** Ingeniería en Sistemas de Información y Ciencias de la Computación (Octavo Semestre)[cite: 3].
 * **Curso:** Sistemas Operativos[cite: 3].
 * **Institución:** Universidad Mariano Gálvez de Guatemala (UMG)[cite: 3].
