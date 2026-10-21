@@ -50,7 +50,6 @@ El proyecto utiliza una arquitectura web basada en componentes para el cliente y
 | Despliegue frontend | Vercel | Publicación de la aplicación web |
 | Despliegue backend | Render | Ejecución de los servicios del servidor |
 
-*Nota: esta tabla describe el stack previsto para el proyecto. La configuración definitiva debe coincidir con las dependencias y servicios que realmente utiliza el repositorio.*
 
 ## Tecnologías utilizadas
 
