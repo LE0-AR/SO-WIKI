@@ -1,134 +1,160 @@
+# SO-WIKI | Sistemas Operativos Wiki
 
-# SO-WIKI (WIKI-SO)
+Plataforma web interactiva para aprender, documentar y simular conceptos fundamentales de los Sistemas Operativos mediante artículos técnicos y simuladores visuales.
 
 ## Descripción del proyecto
 
-**SO-WIKI** es una plataforma web interactiva diseñada para la visualización, simulación y documentación de conceptos clave de Ingeniería en Sistemas y Sistemas Operativos[cite: 3]. El sistema combina un gestor de contenidos (CMS) colaborativo con motores de simulación en el navegador para demostrar de forma práctica la administración de recursos del Kernel: planificación de procesos en cola y en ejecución, gestión de memoria RAM, auditoría de eventos y control de concurrencia[cite: 3].
+**SO-WIKI** es una aplicación web académica desarrollada para facilitar el aprendizaje práctico de conceptos de Ingeniería en Sistemas y Sistemas Operativos.
 
----
+El proyecto integra una base de conocimientos con herramientas interactivas que permiten explorar conceptos como la administración de procesos, la gestión de memoria, la concurrencia y la sincronización de recursos.
 
-## Arquitectura del Sistema y Despliegue en la Nube
+Además, cuenta con funcionalidades de administración de contenido para organizar artículos, categorías y usuarios, según los permisos asignados.
 
-El proyecto está construido bajo una **arquitectura Cliente-Servidor desacoplada** (Frontend y Backend independientes), orientada a eventos y optimizada para un renderizado de alta velocidad[cite: 3]:
+## Funcionalidades principales
 
-* **Frontend (Capa de Presentación):** Alojado en **Vercel** con despliegue continuo (CI/CD) desde GitHub, aprovechando el Virtual DOM de React para actualizar las simulaciones en tiempo real sin recargar el navegador[cite: 3].
-* **Backend (API REST):** Alojado en **Render**, encargado de procesar la lógica de negocio y la comunicación segura entre el cliente y los servicios de almacenamiento.
-* **Base de Datos y Autenticación (BaaS):** Implementado en **Supabase** sobre **PostgreSQL**, gestionando la integridad relacional de artículos, categorías y usuarios mediante sesiones seguras basadas en **JWT (JSON Web Tokens)**[cite: 3].
-* **Almacenamiento Multimedia (Object Storage):** Integración con un **Bucket de Amazon S3** para alojar las imágenes de los artículos de forma externa, evitando sobrecargar la base de datos relacional.
+### Base de conocimientos
+- Publicación y consulta de artículos técnicos.
+- Organización de contenido por categorías.
+- Búsqueda de información.
+- Interfaz web adaptable a diferentes dispositivos.
 
----
+### Simulador de procesos y memoria
+- Representación visual de procesos.
+- Simulación de la asignación y liberación de memoria RAM.
+- Visualización de estados y transiciones de procesos.
+- Registro de eventos para facilitar el análisis de la ejecución.
 
-## Módulos Principales
+###  Simulador de concurrencia
+- Representación de recursos compartidos mediante una simulación de parqueo.
+- Demostración de conceptos de exclusión mutua.
+- Uso de semáforos lógicos para explicar la sincronización.
+- Exploración de condiciones de carrera y concurrencia.
 
-1. **Base de Conocimientos (Wiki-Blog):** Catálogo público de artículos técnicos con filtrado multicategoría y un **Buscador Global en Tiempo Real (Live Search)** sincronizado mediante parámetros de URL (`useSearchParams`)[cite: 1, 3].
-2. **Simulador de Memoria RAM y CPU:** Gestor de recursos sobre una capacidad teórica de **1024 MB** que previene el bloqueo de cabeza de línea (*Head-of-Line Blocking*) evaluando toda la cola de procesos listos, acompañado de una consola **System Log Terminal** con *auto-scroll* para auditar transiciones de estado[cite: 3].
-3. **Simulador de Parqueo Concurrente:** Demostración práctica de exclusión mutua (*Mutex*) y semáforos lógicos para prevenir condiciones de carrera (*Race Conditions*) en recursos compartidos[cite: 1].
-4. **Backoffice Administrativo y Seguridad (RBAC):** Protección de vistas mediante el componente guardián `<RutaPrivada>`, diferenciando permisos entre **Administrador** (CRUD de usuarios, categorías y artículos) y **Editor** (Panel de redacción y publicación)[cite: 3].
+###  Panel administrativo
+- Administración de artículos y categorías.
+- Gestión de usuarios.
+- Control de acceso según roles y permisos.
+- Herramientas para la creación y publicación de contenido.
 
----
+## Arquitectura del sistema
 
-## Tecnologías implementadas
+El proyecto utiliza una arquitectura web basada en componentes para el cliente y servicios para el procesamiento del servidor.
 
-### Lenguaje de programación utilizado
+| Componente | Tecnología | Responsabilidad |
+|---|---|---|
+| Frontend | React.js y Vite | Interfaz de usuario y simuladores interactivos |
+| Estilos | Bootstrap 5 | Diseño adaptable y componentes visuales |
+| Enrutamiento | React Router DOM | Navegación entre páginas y vistas protegidas |
+| Backend | Node.js y Express.js | API y lógica del servidor |
+| Base de datos | Supabase / PostgreSQL | Persistencia de información |
+| Despliegue frontend | Vercel | Publicación de la aplicación web |
+| Despliegue backend | Render | Ejecución de los servicios del servidor |
 
-* **JavaScript (ES6+):** Implementado de forma transversal tanto en la lógica de estados del cliente como en el entorno de ejecución del servidor.
+*Nota: esta tabla describe el stack previsto para el proyecto. La configuración definitiva debe coincidir con las dependencias y servicios que realmente utiliza el repositorio.*
 
-### Librerías y frameworks empleados
+## Tecnologías utilizadas
 
-**Frontend (Cliente):**
+- **JavaScript:** lógica de la aplicación.
+- **React:** construcción de interfaces mediante componentes.
+- **Vite:** servidor de desarrollo y herramienta de compilación.
+- **Node.js:** entorno de ejecución del backend.
+- **Express.js:** desarrollo de endpoints y servicios HTTP.
+- **Bootstrap:** diseño responsivo.
+- **Supabase y PostgreSQL:** servicios de datos, si están configurados en el entorno.
+- **Git y GitHub:** control de versiones y colaboración.
+- **Vercel y Render:** plataformas de despliegue.
 
-* **React.js (v18+):** Biblioteca principal para la construcción de la interfaz de usuario basada en componentes y manejo de estados (`useState`, `useEffect`, `useRef`)[cite: 3].
-* **Vite:** Herramienta de construcción y empaquetado de módulos ECMAScript con *Hot Module Replacement* (HMR) instantáneo[cite: 3].
-* **React Router DOM (v6):** Gestión de enrutamiento del lado del cliente (SPA), parámetros de búsqueda en URL y protección de rutas privadas[cite: 3].
-* **Bootstrap 5 & Bootstrap Icons:** Sistema de grillas responsivo (*mobile-first*) y menú móvil superpuesto controlado directamente desde React[cite: 1, 2, 3].
-* **@supabase/supabase-js:** Cliente oficial para consultas asíncronas (`async/await`) y gestión de autenticación con Supabase[cite: 3].
+## Requisitos previos
 
-**Backend (Servidor):**
+Antes de ejecutar el proyecto, instala:
 
-* **Node.js:** Entorno de ejecución en tiempo de servidor orientado a eventos asíncronos.
-* **Express.js:** Framework minimalista para la estructuración de rutas, controladores y endpoints de la API REST.
-* **Cors & Dotenv:** Middleware para el control de acceso HTTP de origen cruzado (CORS) e inyección segura de variables de entorno.
-* **Nodemon:** Utilidad de monitoreo para el reinicio automático del servidor durante el desarrollo.
+- [Node.js](https://nodejs.org/)
+- [Git](https://git-scm.com/)
+- Un editor de código, como [Visual Studio Code](https://code.visualstudio.com/)
 
----
+Se recomienda utilizar una versión de Node.js compatible con las dependencias del proyecto.
 
-## Instrucciones de instalación y uso
-
-Para ejecutar este proyecto en tu entorno local, asegúrate de tener instalado **Node.js (v18+ recomendado)** y **Git**. Sigue estos pasos:
+## Instalación y ejecución
 
 ### 1. Clonar el repositorio
 
 ```bash
 git clone https://github.com/LE0-AR/wiki.git
 cd wiki
-
 ```
 
-### 2. Configurar e iniciar el Backend (Servidor)
+### 2. Instalar las dependencias
 
-Ingresa al directorio del servidor (o raíz correspondiente de la API), instala las dependencias y configura tus variables de entorno:
+Identifica las carpetas que contienen el frontend y el backend. Si el proyecto mantiene la estructura `frontend/` y `backend/`, ejecuta:
+
+**Backend**
 
 ```bash
 cd backend
 npm install
-
 ```
 
-Crea un archivo `.env` dentro de la carpeta del servidor con tus credenciales:
+**Frontend**
 
-```env
-PORT=3000
-SUPABASE_URL=tu_url_de_supabase
-SUPABASE_KEY=tu_clave_de_supabase
-AWS_ACCESS_KEY_ID=tu_access_key_s3
-AWS_SECRET_ACCESS_KEY=tu_secret_key_s3
-AWS_REGION=tu_region_s3
-AWS_BUCKET_NAME=nombre_de_tu_bucket
-
-```
-
-Inicia el servidor en modo desarrollo:
-
-```bash
-npm run dev
-
-```
-
-### 3. Configurar e iniciar el Frontend (Cliente)
-
-Abre una nueva terminal, dirígete a la carpeta del cliente e instala sus paquetes:
+Abre otra terminal:
 
 ```bash
 cd frontend
 npm install
-
 ```
 
-Crea un archivo `.env` en la raíz del frontend apuntando a tus servicios:
+### 3. Configurar las variables de entorno
+
+Crea los archivos `.env` correspondientes a cada aplicación, utilizando los nombres de variables que espera el código fuente.
+
+Ejemplo para un frontend con Vite:
 
 ```env
-VITE_SUPABASE_URL=tu_url_de_supabase
-VITE_SUPABASE_ANON_KEY=tu_clave_anonima_de_supabase
 VITE_API_URL=http://localhost:3000
-
 ```
 
-Levanta el entorno de desarrollo con Vite:
+Si el proyecto utiliza Supabase, configura también las variables de conexión requeridas por la aplicación.
+
+Para el backend, configura el puerto, las credenciales y los servicios externos que realmente utilice.
+
+**Importante:** no publiques claves privadas, contraseñas ni archivos `.env` con credenciales reales en GitHub.
+
+### 4. Iniciar los servicios
+
+Ejecuta el comando definido en los scripts de `package.json` de cada aplicación.
+
+Por ejemplo, si ambos proyectos incluyen un script `dev`:
 
 ```bash
 npm run dev
-
 ```
 
-La aplicación estará disponible en tu navegador en `http://localhost:5173`.
+La URL local del frontend y el puerto del backend dependerán de la configuración del proyecto.
+
+## Objetivos académicos
+
+SO-WIKI busca reforzar el aprendizaje de los Sistemas Operativos a través de la experimentación y la representación visual de sus principales mecanismos.
+
+Entre los conceptos abordados se encuentran:
+
+- Administración de procesos.
+- Planificación y ejecución.
+- Gestión de memoria.
+- Concurrencia y sincronización.
+- Exclusión mutua y semáforos.
+- Administración de recursos compartidos.
+
+## Autores
+
+**Desarrollador:** Grupo 4.
+
+**Institución:** Universidad Mariano Gálvez de Guatemala.
+
+**Carrera:** Ingeniería en Sistemas de Información y Ciencias de la Computación.
+
+**Curso:** Sistemas Operativos.
+**Sede:** Chimaltenango. 
 
 ---
 
-## Autores y Contexto Académico
-
-* **Desarrollador:** Grupo 4.
-* **Carrera:** Ingeniería en Sistemas de Información y Ciencias de la Computación (Octavo Semestre)[cite: 3].
-* **Curso:** Sistemas Operativos[cite: 3].
-* **Institución:** Universidad Mariano Gálvez de Guatemala (UMG)[cite: 3].
-
----
+Desarrollado como proyecto académico para el aprendizaje práctico de los Sistemas Operativos.
