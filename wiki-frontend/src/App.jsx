@@ -12,6 +12,7 @@ import { EditorPanel } from './pages/editor';
 import { Categoria } from './pages/categoria';
 import { Usuarios } from './pages/usuarios';
 import { Parqueo } from './pages/parqueo';
+import { Documentacion } from './pages/informacion';
 
 function Navbar({ usuario, setUsuario }) {
   const navigate = useNavigate();
@@ -89,6 +90,11 @@ function Navbar({ usuario, setUsuario }) {
               <li className="nav-item">
                 <Link className="nav-link fw-semibold text-dark" to="/parqueo" onClick={cerrarMenu}>Parqueo</Link>
               </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/documentacion" onClick={cerrarMenu}>
+                  <i className="bi bi-file-earmark-code me-1"></i> Documentación
+                </Link>
+              </li>
             </ul>
 
             <div className="d-flex flex-column flex-lg-row align-items-center gap-3">
@@ -106,7 +112,7 @@ function Navbar({ usuario, setUsuario }) {
               {usuario ? (
                 <div className="d-flex flex-column flex-lg-row gap-2 w-100">
                   {(usuario.rol === 'Admin' || usuario.rol === 'Administrador') && (
-                    <Link to="/panel" className="btn btn-outline-dark rounded-pill px-3 fw-bold w-100 text-center" onClick={cerrarMenu}>Panel Admin</Link>
+                    <Link to="/panel" className="btn btn-outline-dark rounded-pill px-3 fw-bold w-100 text-center" onClick={cerrarMenu}>Panel </Link>
                   )}
                   {(usuario.rol === 'Editor') && (
                     <Link to="/editor" className="btn btn-outline-dark rounded-pill px-3 fw-bold w-100 text-center" onClick={cerrarMenu}>Redactar</Link>
@@ -160,6 +166,7 @@ function App() {
         <Route path="/login" element={<Login setUsuario={setUsuario} />} />
         <Route path="/categoria" element={<Categoria />} />
         <Route path="/parqueo" element={<Parqueo />} />
+        <Route path="/documentacion" element={<Documentacion />} />
         
         <Route
           path="/panel"
